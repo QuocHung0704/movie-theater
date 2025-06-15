@@ -41,6 +41,14 @@ public class ActorServiceImpl implements ActorService {
     }
 
     @Override
+    public ActorResponse updateActor(ActorRequest actorRequest) {
+        Actor actor = findActorByActorId(actorRequest.getActorId());
+        actor = actorMapper.updateActor(actor, actorRequest);
+        Actor savedActor = actorRepository.save(actor);
+        return actorMapper.toActorResponse(savedActor);
+    }
+
+    @Override
     public Page<ActorResponse> findAllActorsByCriteria(Map<String, Object> criteria, Pageable pageable) {
         Specification<Actor> actorSpecification = ActorSpecification.filterBYCriteria(criteria);
         return actorRepository.findAll(actorSpecification, pageable)

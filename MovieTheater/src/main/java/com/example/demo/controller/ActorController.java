@@ -45,4 +45,10 @@ public class ActorController {
                 .getContent();
         return new ResponseEntity<>(actorResponses, HttpStatus.OK);
     }
+
+    @PutMapping("")
+    public ResponseEntity<ActorResponse> updateActor(@Valid @RequestBody ActorRequest actorRequest) {
+        ActorResponse actorResponse = actorService.updateActor(actorRequest);
+        return new ResponseEntity<>(actorResponse, HttpStatus.OK);
+    }
 }
