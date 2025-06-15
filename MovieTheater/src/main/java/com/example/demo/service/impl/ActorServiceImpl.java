@@ -49,6 +49,18 @@ public class ActorServiceImpl implements ActorService {
     }
 
     @Override
+    public boolean deleteActor(Long actorId) {
+        Actor actor = findActorByActorId(actorId);
+        if (actor == null) {
+            return false;
+        }
+
+        actor.setIsActive(Boolean.FALSE);
+        actorRepository.save(actor);
+        return true;
+    }
+
+    @Override
     public Page<ActorResponse> findAllActorsByCriteria(Map<String, Object> criteria, Pageable pageable) {
         Specification<Actor> actorSpecification = ActorSpecification.filterBYCriteria(criteria);
         return actorRepository.findAll(actorSpecification, pageable)

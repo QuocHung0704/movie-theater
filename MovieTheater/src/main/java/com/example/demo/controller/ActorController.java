@@ -51,4 +51,14 @@ public class ActorController {
         ActorResponse actorResponse = actorService.updateActor(actorRequest);
         return new ResponseEntity<>(actorResponse, HttpStatus.OK);
     }
+
+    @DeleteMapping("{actorId}")
+    public ResponseEntity<String> deleteActor(@PathVariable Long actorId) {
+        boolean deleted = actorService.deleteActor(actorId);
+        if (deleted) {
+            return ResponseEntity.ok("Xóa diễn viên thành công");
+        } else {
+            return ResponseEntity.ok("Không tìm thấy diễn viên");
+        }
+    }
 }

@@ -14,6 +14,8 @@ public interface ActorService {
 
     ActorResponse updateActor(ActorRequest actorRequest);
 
+    boolean deleteActor(Long actorId);
+
     Page<ActorResponse> findAllActorsByCriteria(Map<String, Object> criteria, Pageable pageable);
 
 }
