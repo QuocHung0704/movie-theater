@@ -26,4 +26,12 @@ public class ActorMapperImpl implements ActorMapper {
                 .isActive(actor.getIsActive())
                 .build();
     }
+
+    @Override
+    public Actor updateActor(Actor actor, ActorRequest actorRequest) {
+        if (!actorRequest.getActorName().equals(actor.getActorName())) {
+            actor.setActorName(actorRequest.getActorName());
+        }
+        return actor;
+    }
 }

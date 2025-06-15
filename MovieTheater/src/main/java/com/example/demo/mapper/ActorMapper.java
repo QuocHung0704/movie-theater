@@ -7,4 +7,5 @@ import com.example.demo.entity.response.ActorResponse;
 public interface ActorMapper {
     Actor toActor(ActorRequest actor);
     ActorResponse toActorResponse(Actor actor);
+    Actor updateActor(Actor actor, ActorRequest actorRequest);
 }
