@@ -7,12 +7,16 @@ import com.example.demo.service.ActorService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -60,5 +64,11 @@ public class ActorController {
         } else {
             return ResponseEntity.ok("Không tìm thấy diễn viên");
         }
+    }
+
+    @PostMapping(value = "import-excel", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<List<ActorResponse>> importActorFromExcel(@RequestParam("file") MultipartFile file) throws IOException {
+        List<ActorResponse> importedActors = actorService.importDataFromExcel(file);
+        return ResponseEntity.ok(importedActors);
     }
 }
