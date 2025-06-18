@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface MovieRepository extends JpaRepository<Movie, Long> {
     List<Movie> findMovieByStatusAndIsDeletedFalse(MovieStatus status);
+    Movie findMovieById(Long id);
 }
