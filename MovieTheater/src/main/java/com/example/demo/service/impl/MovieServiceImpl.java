@@ -4,6 +4,7 @@ import com.example.demo.entity.Movie;
 import com.example.demo.entity.Type;
 import com.example.demo.entity.request.MovieRequest;
 import com.example.demo.entity.response.MovieResponse;
+import com.example.demo.enums.MovieStatus;
 import com.example.demo.mapper.MovieMapper;
 import com.example.demo.repository.MovieRepository;
 import com.example.demo.service.MovieService;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.modelmapper.ModelMapper;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,5 +31,13 @@ public class MovieServiceImpl implements MovieService {
         movie.setTypes(types);
         Movie savedMovies = movieRepository.save(movie);
         return modelMapper.map(savedMovies, MovieResponse.class);
+    }
+
+    @Override
+    public List<MovieResponse> getMoviesByStatus(MovieStatus status) {
+        List<Movie> movieList = movieRepository.findMovieByStatusAndIsDeletedFalse(status);
+        return movieList.stream()
+                .map(movie -> modelMapper.map(movie, MovieResponse.class))
+                .collect(Collectors.toList());
     }
 }
