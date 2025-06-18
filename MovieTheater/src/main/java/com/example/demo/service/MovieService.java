@@ -10,5 +10,5 @@ public interface MovieService {
     MovieResponse addMovie(MovieRequest movieRequest);
     List<MovieResponse> getMoviesByStatus(MovieStatus movieStatus);
     MovieResponse getMovieById(Long movieId);
-
+    MovieResponse updateMovie(Long movieId, MovieRequest movieRequest);
 }

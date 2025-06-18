@@ -7,14 +7,15 @@ import com.example.demo.mapper.MovieMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class MovieMapperImpl implements MovieMapper {
     @Override
     public Movie toMovie(MovieRequest movieRequest) {
         return Movie.builder()
-                .titleVN(movieRequest.getTitleVN())
-                .titleEng(movieRequest.getTitleENG())
+                .title(movieRequest.getTitle())
                 .director(movieRequest.getDirector())
                 .actor(movieRequest.getActor())
                 .productCompany(movieRequest.getProductionCompany())
@@ -27,4 +28,21 @@ public class MovieMapperImpl implements MovieMapper {
                 .isDeleted(movieRequest.getIsDeleted() != null && movieRequest.getIsDeleted())
                 .build();
     }
+
+    @Override
+    public Movie updateMovie(Movie movie, MovieRequest request) {
+        Optional.ofNullable(request.getTitle()).ifPresent(movie::setTitle);
+        Optional.ofNullable(request.getDirector()).ifPresent(movie::setDirector);
+        Optional.ofNullable(request.getActor()).ifPresent(movie::setActor);
+        Optional.ofNullable(request.getProductionCompany()).ifPresent(movie::setProductCompany);
+        Optional.ofNullable(request.getContent()).ifPresent(movie::setContent);
+        Optional.ofNullable(request.getVersion()).ifPresent(movie::setVersion);
+        Optional.ofNullable(request.getDuration()).ifPresent(movie::setDuration);
+        Optional.ofNullable(request.getPosterUrl()).ifPresent(movie::setPosterUrl);
+        Optional.ofNullable(request.getTrailerUrl()).ifPresent(movie::setTrailerUrl);
+        Optional.ofNullable(request.getStatus()).ifPresent(movie::setStatus);
+        Optional.ofNullable(request.getRating()).ifPresent(movie::setRating);
+        return movie;
+    }
+
 }

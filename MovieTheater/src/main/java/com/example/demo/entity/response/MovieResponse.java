@@ -1,6 +1,7 @@
 package com.example.demo.entity.response;
 
 import com.example.demo.entity.ShowDatePeriod;
+import com.example.demo.enums.MovieStatus;
 import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,8 +18,7 @@ import java.util.List;
 @Builder
 public class MovieResponse {
     private Long id;
-    private String titleVN;
-    private String titleENG;
+    private String title;
     private String director;
     private String actor;
     private String productionCompany;
@@ -29,6 +29,8 @@ public class MovieResponse {
     private String version;
     private List<TypeResponse> types;
     private Integer duration;
+    private MovieStatus status;
+    private float rating;
     private LocalDate releaseDate;
     private LocalDate endDate;
     private LocalDateTime createdAt;

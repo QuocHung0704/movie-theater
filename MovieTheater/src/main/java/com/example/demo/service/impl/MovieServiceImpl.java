@@ -48,6 +48,17 @@ public class MovieServiceImpl implements MovieService {
         return modelMapper.map(movie, MovieResponse.class);
     }
 
+    @Override
+    public MovieResponse updateMovie(Long movieId, MovieRequest movieRequest) {
+        Movie oldMovie = getMovieByMovieId(movieId);
+        movieMapper.updateMovie(oldMovie, movieRequest);
+
+        List<Type> types = typeService.getTypesById(movieRequest.getTypes());
+        oldMovie.setTypes(types);
+        Movie updateMovie = movieRepository.save(oldMovie);
+        return modelMapper.map(updateMovie, MovieResponse.class);
+    }
+
     public Movie getMovieByMovieId(Long id) {
         return movieRepository.findById(id)
                 .orElseThrow(() -> new MovieException("Movie not found with id: " + id));

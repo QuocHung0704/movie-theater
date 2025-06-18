@@ -14,8 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class MovieRequest {
-    private String titleVN;
-    private String titleENG;
+    private String title;
     private String director;
     private String actor;
     private String productionCompany;
