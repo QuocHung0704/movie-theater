@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class TypeRequest {
-    private Long typeId;
     private String typeName;
     private Boolean isActive;
 }

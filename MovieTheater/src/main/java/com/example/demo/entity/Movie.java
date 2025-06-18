@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 import com.example.demo.enums.MovieStatus;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,11 +25,8 @@ public class Movie {
     @Column(name = "movie_id")
     private Long id;
 
-    @Column(name = "title_vn", nullable = false)
-    private String titleVN;
-
-    @Column(name = "title_eng", nullable = false)
-    private String titleEng;
+    @Column(name = "title", nullable = false)
+    private String title;
 
     @Column(name = "director")
     private String director;
@@ -68,6 +66,8 @@ public class Movie {
     @Column(nullable = false)
     private MovieStatus status;
 
+    private Float rating;
+
     @CreationTimestamp
     @Column(name = "create_at", updatable = false)
     private LocalDateTime createAt;
@@ -76,11 +76,11 @@ public class Movie {
     @Column(name = "update_at")
     private LocalDateTime updateAt;
 
-    @ManyToMany
-    @JoinTable(name = "movie_type",
-            joinColumns = @JoinColumn(name = "movie_id"),
-            inverseJoinColumns = @JoinColumn(name = "type_id"))
-    private List<Type> types;
+        @ManyToMany(cascade = CascadeType.PERSIST)
+        @JoinTable(name = "movie_type",
+                joinColumns = @JoinColumn(name = "movie_id"),
+                inverseJoinColumns = @JoinColumn(name = "type_id"))
+        private List<Type> types;
 
     @OneToMany(mappedBy = "movie")
     private List<ShowDatePeriod> showDatePeriods;
