@@ -9,6 +9,5 @@ import java.util.List;
 public interface MovieService {
     MovieResponse addMovie(MovieRequest movieRequest);
     List<MovieResponse> getMoviesByStatus(MovieStatus movieStatus);
-    MovieResponse getMovieById(Long movieId);
 
 }

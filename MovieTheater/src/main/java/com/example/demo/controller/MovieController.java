@@ -1,6 +1,5 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.Movie;
 import com.example.demo.entity.request.MovieRequest;
 import com.example.demo.entity.response.MovieResponse;
 import com.example.demo.enums.MovieStatus;
@@ -36,9 +35,5 @@ public class MovieController {
         return new ResponseEntity<>(movies, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<MovieResponse> getMovieById(@PathVariable Long id) {
-        MovieResponse movie = movieService.getMovieById(id);
-        return ResponseEntity.ok(movie);
-    }
+
 }
