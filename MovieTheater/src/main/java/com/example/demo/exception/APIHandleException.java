@@ -36,5 +36,6 @@ public class APIHandleException {
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
+    //Handle cc exception custom
 
 }
