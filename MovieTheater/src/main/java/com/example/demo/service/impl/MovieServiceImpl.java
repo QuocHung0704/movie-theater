@@ -1,6 +1,7 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.Movie;
+import com.example.demo.entity.ShowDatePeriod;
 import com.example.demo.entity.Type;
 import com.example.demo.entity.request.MovieRequest;
 import com.example.demo.entity.response.MovieResponse;
@@ -12,9 +13,16 @@ import com.example.demo.service.MovieService;
 import com.example.demo.service.TypeService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 import org.modelmapper.ModelMapper;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -69,6 +77,56 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
+    public List<MovieResponse> importMovieFromExcel(MultipartFile file) throws IOException {
+        Workbook workbook = new XSSFWorkbook(file.getInputStream());
+        Sheet sheet = workbook.getSheetAt(0);
+
+        List<Movie> movies = new ArrayList<>();
+        for (Row row : sheet) {
+            if (row.getRowNum() == 0) {
+                continue;
+            }
+
+            MovieRequest movieRequest = MovieRequest.builder()
+                    .title(row.getCell(0, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL).getStringCellValue())
+                    .director(row.getCell(1, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL).getStringCellValue())
+                    .actor(row.getCell(2, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL).getStringCellValue())
+                    .productionCompany(row.getCell(3, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL).getStringCellValue())
+                    .content(row.getCell(4, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL).getStringCellValue())
+                    .posterUrl(row.getCell(5, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL).getStringCellValue())
+                    .trailerUrl(row.getCell(6, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL).getStringCellValue())
+                    .version(row.getCell(7, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL).getStringCellValue())
+                    .duration((int) row.getCell(9, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL).getNumericCellValue())
+                    .build();
+
+            Movie movie = movieMapper.toMovie(movieRequest);
+
+            // Comedy, Drama
+            String[] typeNames = row.getCell(8, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL).getStringCellValue().split(", ");
+            List<Type> types = typeService.getTypesByTypesName(List.of(typeNames));
+            movie.setTypes(types);
+
+            // Show Date Period: StartDate, EndDate
+            List<ShowDatePeriod> periodList = new ArrayList<>();
+            ShowDatePeriod datePeriod = ShowDatePeriod.builder()
+                    .startDate(row.getCell(10, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL).getLocalDateTimeCellValue().toLocalDate())
+                    .endDate(row.getCell(11, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL).getLocalDateTimeCellValue().toLocalDate())
+                    .isActive(true)
+                    .movie(movie)
+                    .build();
+            periodList.add(datePeriod);
+            movie.setShowDatePeriods(periodList);
+
+            movies.add(movie);
+        }
+
+        List<Movie> savedMovies = movieRepository.saveAll(movies);
+        return savedMovies.stream()
+                .map(movie -> modelMapper.map(movie, MovieResponse.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<MovieResponse> searchMovieByTitle(String title) {
         List<Movie> movieList = movieRepository.findByTitleContainingIgnoreCase(title);
 
@@ -80,6 +138,7 @@ public class MovieServiceImpl implements MovieService {
                 .map(movie -> modelMapper.map(movie, MovieResponse.class))
                 .collect(Collectors.toList());
     }
+
 
     public Movie getMovieByMovieId(Long id) {
         return movieRepository.findById(id)

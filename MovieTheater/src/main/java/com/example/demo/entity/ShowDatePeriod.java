@@ -26,6 +26,9 @@ public class ShowDatePeriod {
     @Column(name = "end_date")
     private LocalDate endDate;
 
+    @Column(name = "is_active")
+    private Boolean isActive;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "movie_id", referencedColumnName = "movie_id")
     private Movie movie;

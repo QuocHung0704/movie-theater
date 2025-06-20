@@ -9,4 +9,5 @@ import java.util.List;
 public interface TypeService {
     TypeResponse createType(TypeRequest typeRequest);
     List<Type> getTypesById(List<Long> typeIds);
+    List<Type> getTypesByTypesName(List<String> typesNames);
 }
