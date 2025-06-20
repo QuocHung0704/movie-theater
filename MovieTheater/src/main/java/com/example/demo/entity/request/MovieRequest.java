@@ -22,7 +22,7 @@ public class MovieRequest {
     private String version;
     private List<Long> types;
     private Integer duration;
-    private Boolean isDeleted;
+    private Boolean isDeleted = false;
     private String posterUrl;
     private String trailerUrl;
     private MovieStatus status;
