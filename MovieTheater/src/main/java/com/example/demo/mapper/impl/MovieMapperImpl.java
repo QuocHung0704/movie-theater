@@ -25,7 +25,7 @@ public class MovieMapperImpl implements MovieMapper {
                 .version(movieRequest.getVersion())
                 .duration(movieRequest.getDuration())
                 .status(movieRequest.getStatus() == null ? MovieStatus.COMING_SOON : movieRequest.getStatus())
-                .isDeleted(movieRequest.getIsDeleted() != null && movieRequest.getIsDeleted())
+                .isDeleted(false)
                 .build();
     }
 
