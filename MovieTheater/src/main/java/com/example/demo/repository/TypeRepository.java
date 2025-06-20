@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface TypeRepository extends JpaRepository<Type, Long> {
     List<Type> findTypesByTypeIdIsIn(List<Long> typeIds);
+    List<Type> findTypesByTypeNameIsIn(List<String> typeName);
 }

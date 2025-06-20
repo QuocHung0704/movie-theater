@@ -28,4 +28,9 @@ public class TypeServiceImpl implements TypeService {
     public List<Type> getTypesById(List<Long> typeIds) {
         return typeRepository.findTypesByTypeIdIsIn(typeIds);
     }
+
+    @Override
+    public List<Type> getTypesByTypesName(List<String> typesNames) {
+        return typeRepository.findTypesByTypeNameIsIn(typesNames);
+    }
 }
