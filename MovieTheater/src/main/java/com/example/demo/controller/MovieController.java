@@ -48,9 +48,14 @@ public class MovieController {
         return ResponseEntity.ok(newMovie);
     }
 
-        @DeleteMapping("/{id}")
-        public ResponseEntity<?> deleteMovie(@PathVariable Long id) {
-            MovieResponse deleteMovie = movieService.deleteMovie(id);
-            return ResponseEntity.ok(deleteMovie);
-        }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteMovie(@PathVariable Long id) {
+        MovieResponse deleteMovie = movieService.deleteMovie(id);
+        return ResponseEntity.ok(deleteMovie);
+    }
+
+    @GetMapping("search")
+    public List<MovieResponse> searchMovieByTitle(@RequestParam String title) {
+        return movieService.searchMovieByTitle(title);
+    }
 }

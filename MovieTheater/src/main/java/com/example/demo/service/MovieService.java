@@ -12,4 +12,6 @@ public interface MovieService {
     MovieResponse getMovieById(Long movieId);
     MovieResponse updateMovie(Long movieId, MovieRequest movieRequest);
     MovieResponse deleteMovie(Long movieId);
+
+    List<MovieResponse> searchMovieByTitle(String title);
 }

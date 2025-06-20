@@ -10,6 +10,7 @@ import com.example.demo.mapper.MovieMapper;
 import com.example.demo.repository.MovieRepository;
 import com.example.demo.service.MovieService;
 import com.example.demo.service.TypeService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.modelmapper.ModelMapper;
@@ -67,6 +68,18 @@ public class MovieServiceImpl implements MovieService {
         return modelMapper.map(deletedMovie, MovieResponse.class);
     }
 
+    @Override
+    public List<MovieResponse> searchMovieByTitle(String title) {
+        List<Movie> movieList = movieRepository.findByTitleContainingIgnoreCase(title);
+
+        if (movieList.isEmpty()) {
+            throw new EntityNotFoundException("Không tìm thấy phim " + title);
+        }
+
+        return movieList.stream()
+                .map(movie -> modelMapper.map(movie, MovieResponse.class))
+                .collect(Collectors.toList());
+    }
 
     public Movie getMovieByMovieId(Long id) {
         return movieRepository.findById(id)
