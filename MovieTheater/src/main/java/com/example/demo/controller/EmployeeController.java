@@ -23,4 +23,9 @@ public class EmployeeController {
         Employee savedEmployee = employeeService.createEmployee(employeeRequest);
         return ResponseEntity.ok(savedEmployee);
     }
+
+    @GetMapping("")
+    public ResponseEntity getAllEmployees() {
+        return ResponseEntity.ok(employeeService.getAllEmployees());
+    }
 }
