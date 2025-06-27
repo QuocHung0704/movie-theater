@@ -4,7 +4,9 @@ import com.example.demo.entity.Employee;
 import com.example.demo.entity.request.EmployeeRequest;
 import com.example.demo.entity.response.EmployeeResponse;
 import jakarta.validation.Valid;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface EmployeeService {
@@ -13,4 +15,8 @@ public interface EmployeeService {
     List<EmployeeResponse> getAllEmployees();
 
     Employee deleteEmployee(long employeeId);
+
+    byte[] exportEmployeesToExcel();
+
+    void importDataFromExcel(MultipartFile file) throws IOException;
 }

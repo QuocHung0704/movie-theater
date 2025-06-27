@@ -8,13 +8,22 @@ import com.example.demo.enums.UserRoleEnums;
 import com.example.demo.repository.EmployeeRepository;
 import com.example.demo.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -89,6 +98,83 @@ public class EmployeeServiceImpl implements EmployeeService {
             employee.getAccount().setStatus(false);
             employeeRepository.save(employee);
             return employee;
+        }
+    }
+
+    @Override
+    public byte[] exportEmployeesToExcel() {
+        List<EmployeeResponse> employees = getAllEmployees();
+
+        try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            Sheet sheet = workbook.createSheet("Employees");
+
+            // Create header row
+            String[] headers = {"Employee ID", "Username", "Full Name", "Email", "Phone Number", "Date of Birth", "Role"};
+            Row headerRow = sheet.createRow(0);
+            for (int i = 0; i < headers.length; i++) {
+                Cell cell = headerRow.createCell(i);
+                cell.setCellValue(headers[i]);
+            }
+
+            // Populate data rows
+            int rowIdx = 1;
+            for (EmployeeResponse employee : employees) {
+                Row row = sheet.createRow(rowIdx++);
+                row.createCell(0).setCellValue(employee.getEmployeeId());
+                row.createCell(1).setCellValue(employee.getUsername());
+                row.createCell(2).setCellValue(employee.getFullName());
+                row.createCell(3).setCellValue(employee.getEmail());
+                row.createCell(4).setCellValue(employee.getPhoneNumber());
+                row.createCell(5).setCellValue(employee.getDateOfBirth() != null ? employee.getDateOfBirth().toString() : "");
+                row.createCell(6).setCellValue(employee.getAccountRole() != null ? employee.getAccountRole().name() : "");
+            }
+
+            workbook.write(out);
+            return out.toByteArray();
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to export data to Excel: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void importDataFromExcel(MultipartFile file) throws IOException {
+        try (Workbook workbook = new XSSFWorkbook(file.getInputStream())) {
+            Sheet sheet = workbook.getSheetAt(0);
+
+            for (Row row : sheet) {
+                if (row.getRowNum() == 0) {
+                    continue;
+                }
+
+                String username = row.getCell(0) != null ? row.getCell(0).getStringCellValue() : null;
+                String fullName = row.getCell(1) != null ? row.getCell(1).getStringCellValue() : null;
+                String email = row.getCell(2) != null ? row.getCell(2).getStringCellValue() : null;
+                String phoneNumber = row.getCell(3) != null ? row.getCell(3).getStringCellValue() : null;
+                String identityCard = row.getCell(4) != null ? row.getCell(4).getStringCellValue() : null;
+                Date dateOfBirth = row.getCell(5) != null ? row.getCell(5).getDateCellValue() : null;
+                String password = row.getCell(6) != null ? row.getCell(6).getStringCellValue() : null;
+                String confirmPassword = row.getCell(7) != null ? row.getCell(7).getStringCellValue() : null;
+
+                if (username == null || fullName == null || email == null || phoneNumber == null ||
+                        identityCard == null || dateOfBirth == null || password == null || confirmPassword == null) {
+                    continue;
+                }
+
+                EmployeeRequest employeeRequest = EmployeeRequest.builder()
+                        .username(username)
+                        .fullName(fullName)
+                        .email(email)
+                        .phoneNumber(phoneNumber)
+                        .identityCard(identityCard)
+                        .dateOfBirth(dateOfBirth)
+                        .password(password)
+                        .confirmPassword(confirmPassword)
+                        .build();
+
+                createEmployee(employeeRequest);
+            }
+        } catch (Exception e) {
+            throw new IOException("Failed to import data from Excel: " + e.getMessage(), e);
         }
     }
 }
