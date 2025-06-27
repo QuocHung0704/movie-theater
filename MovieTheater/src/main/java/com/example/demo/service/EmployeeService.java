@@ -11,4 +11,6 @@ public interface EmployeeService {
     Employee createEmployee(@Valid EmployeeRequest employeeRequest);
 
     List<EmployeeResponse> getAllEmployees();
+
+    Employee deleteEmployee(long employeeId);
 }
