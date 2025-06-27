@@ -8,8 +8,11 @@ import com.example.demo.enums.UserRoleEnums;
 import com.example.demo.repository.EmployeeRepository;
 import com.example.demo.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,6 +77,18 @@ public class EmployeeServiceImpl implements EmployeeService {
                 }
             }
             return employeeResponses;
+        }
+    }
+
+    @Override
+    public Employee deleteEmployee(long employeeId) {
+        Employee employee = employeeRepository.findById(employeeId);
+        if (employee == null) {
+            throw new IllegalArgumentException("Employee not found");
+        } else {
+            employee.getAccount().setStatus(false);
+            employeeRepository.save(employee);
+            return employee;
         }
     }
 }
