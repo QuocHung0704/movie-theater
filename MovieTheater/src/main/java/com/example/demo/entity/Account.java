@@ -35,6 +35,5 @@ public class Account {
     private String username;
     @Column(nullable = false)
     private boolean emailVerified = false;
-//    private String avatar;
-
+    private String avatar;
 }
