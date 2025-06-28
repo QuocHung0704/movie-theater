@@ -1,8 +1,10 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.Member;
+import com.example.demo.entity.request.LoginGoogleRequest;
 import com.example.demo.entity.request.LoginRequest;
 import com.example.demo.entity.request.RegisterRequest;
+import com.example.demo.entity.response.LoginGoogleResponse;
 import com.example.demo.entity.response.LoginResponse;
 import com.example.demo.service.AuthenticationService;
 import jakarta.validation.Valid;
@@ -27,5 +29,15 @@ public class AuthenticationController {
     public ResponseEntity login(@Valid @RequestBody LoginRequest loginRequest) {
         LoginResponse loginResponse = authenticationService.login(loginRequest);
         return ResponseEntity.ok(loginResponse);
+    }
+
+    @PostMapping("login/google")
+    public ResponseEntity loginGoogle(@Valid @RequestBody LoginGoogleRequest loginGoogleRequest) {
+        LoginResponse loginResponse = authenticationService.loginGoole(loginGoogleRequest);
+        LoginGoogleResponse loginGoogleResponse = LoginGoogleResponse.builder()
+                .token(loginResponse.getToken())
+                .user(loginResponse)
+                .build();
+        return ResponseEntity.ok(loginGoogleResponse);
     }
 }
