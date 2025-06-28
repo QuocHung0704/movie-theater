@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.entity.request.LoginGoogleRequest;
 import com.example.demo.entity.request.LoginRequest;
 import com.example.demo.entity.response.LoginResponse;
 import org.springframework.stereotype.Service;
@@ -8,5 +9,5 @@ import org.springframework.stereotype.Service;
 public interface LoginService {
     LoginResponse login(LoginRequest loginRequest);
 
-    LoginResponse loginGoogle(LoginRequest loginRequest);
+    LoginResponse loginGoogle(LoginGoogleRequest loginGoogleRequest);
 }

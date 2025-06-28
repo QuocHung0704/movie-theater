@@ -1,8 +1,10 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.Member;
+import com.example.demo.entity.request.LoginGoogleRequest;
 import com.example.demo.entity.request.LoginRequest;
 import com.example.demo.entity.request.RegisterRequest;
+import com.example.demo.entity.response.LoginGoogleResponse;
 import com.example.demo.entity.response.LoginResponse;
 import com.example.demo.service.AuthenticationService;
 import com.example.demo.service.LoginService;
@@ -26,5 +28,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public LoginResponse login(LoginRequest loginRequest) {
         return loginService.login(loginRequest  );
+    }
+
+    @Override
+    public LoginResponse loginGoole(LoginGoogleRequest loginGoogleRequest) {
+        return loginService.loginGoogle(loginGoogleRequest);
     }
 }

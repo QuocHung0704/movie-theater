@@ -12,9 +12,11 @@ import lombok.NoArgsConstructor;
 @Builder
 public class LoginResponse {
     private Long accountId;
+    private Long memberId;
     private String email;
     private String fullName;
     private String phoneNumber;
+    private String avatar;
     private UserRoleEnums accountRole;
     private boolean status;
     private String token;
