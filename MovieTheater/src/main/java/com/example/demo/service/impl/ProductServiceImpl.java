@@ -2,6 +2,7 @@ package com.example.demo.service.impl;
 
 import com.example.demo.entity.Product;
 import com.example.demo.entity.request.ProductRequest;
+import com.example.demo.entity.request.ProductSearchRequest;
 import com.example.demo.entity.response.ProductResponse;
 import com.example.demo.enums.ProductType;
 import com.example.demo.mapper.ProductMapper;
@@ -10,6 +11,8 @@ import com.example.demo.service.ProductService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -58,6 +61,19 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> getProductByType(ProductType type) {
         return productRepository.getProductByType(type);
     }
+
+    @Override
+    public Page<ProductResponse> searchProduct(ProductSearchRequest request, Pageable pageable) {
+        Page<Product> products = productRepository.findByCriteria(
+                request.getName(),
+                request.getType(),
+                request.getIsActive(),
+                pageable
+        );
+
+        return products.map(productMapper::toProductResponse);
+    }
+
 
     private void validateProductRequest(ProductRequest productRequest) {
         if (productRequest.getProductName() == null || productRequest.getProductName().trim().isEmpty()) {
