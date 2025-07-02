@@ -43,6 +43,11 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findByIdIsActive(id).orElse(null);
     }
 
+    @Override
+    public List<Product> getProductByType(ProductType type) {
+        return productRepository.getProductByType(type);
+    }
+
     private void validateProductRequest(ProductRequest productRequest) {
         if (productRequest.getProductName() == null || productRequest.getProductName().trim().isEmpty()) {
             throw new IllegalArgumentException("Product name cannot be empty");
