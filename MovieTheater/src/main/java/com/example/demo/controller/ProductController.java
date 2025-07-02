@@ -2,9 +2,11 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.Product;
 import com.example.demo.entity.request.ProductRequest;
+import com.example.demo.entity.response.ProductResponse;
 import com.example.demo.enums.ProductType;
 import com.example.demo.service.ProductService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,5 +53,20 @@ public class ProductController {
     @GetMapping("type/{type}")
     public ResponseEntity<List<Product>> getProductByType(@PathVariable ProductType type) {
         return ResponseEntity.ok(productService.getProductByType(type));
+    }
+
+
+    @PutMapping("{id}")
+    public ResponseEntity updateProduct(@PathVariable Long id, @RequestBody ProductRequest productRequest) {
+        try {
+            ProductResponse updateProduct = productService.updateProduct(id, productRequest);
+            return ResponseEntity.ok(updateProduct);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.badRequest().body(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }

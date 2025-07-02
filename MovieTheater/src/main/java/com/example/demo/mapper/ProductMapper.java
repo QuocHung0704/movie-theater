@@ -7,4 +7,5 @@ import com.example.demo.entity.response.ProductResponse;
 public interface ProductMapper {
     Product toProduct(ProductRequest product);
     ProductResponse toProductResponse(Product product);
+    Product updateProduct(Product products, ProductRequest productRequest);
 }
