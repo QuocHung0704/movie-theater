@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ProductServiceImpl implements ProductService {
     @Autowired
@@ -29,6 +31,11 @@ public class ProductServiceImpl implements ProductService {
         } catch (DataAccessException e) {
             throw new RuntimeException("Failed to save product", e);
         }
+    }
+
+    @Override
+    public List<Product> getAllProducts() {
+        return productRepository.findAllActive();
     }
 
     private void validateProductRequest(ProductRequest productRequest) {
