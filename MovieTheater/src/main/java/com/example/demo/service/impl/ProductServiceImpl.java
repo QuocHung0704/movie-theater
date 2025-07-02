@@ -2,10 +2,12 @@ package com.example.demo.service.impl;
 
 import com.example.demo.entity.Product;
 import com.example.demo.entity.request.ProductRequest;
+import com.example.demo.entity.response.ProductResponse;
 import com.example.demo.enums.ProductType;
 import com.example.demo.mapper.ProductMapper;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.service.ProductService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -41,6 +43,15 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product getProductById(Long id) {
         return productRepository.findByIdIsActive(id).orElse(null);
+    }
+
+    @Override
+    public ProductResponse updateProduct(Long id, ProductRequest productRequest) {
+        Product product = productRepository.findByIdIsActive(id).orElseThrow(() -> new EntityNotFoundException("Product not found"));
+        validateProductRequest(productRequest);
+        productMapper.updateProduct(product, productRequest);
+        productRepository.save(product);
+        return productMapper.toProductResponse(product);
     }
 
     @Override

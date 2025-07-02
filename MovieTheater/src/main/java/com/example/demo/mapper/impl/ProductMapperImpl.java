@@ -37,4 +37,17 @@ public class ProductMapperImpl implements ProductMapper {
                 .updatedAt(product.getUpdatedAt())
                 .build();
     }
+
+    @Override
+    public Product updateProduct(Product product, ProductRequest productRequest) {
+        product.setProductName(productRequest.getProductName());
+        product.setDescription(productRequest.getDescription());
+        product.setImageUrl(productRequest.getImageUrl());
+        product.setPrice(productRequest.getPrice());
+        product.setProductType(productRequest.getProductType());
+        product.setIsActive(productRequest.getIsActive());
+        product.setStock(productRequest.getStock());
+        return product;
+    }
+
 }
