@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.Product;
 import com.example.demo.entity.request.ProductRequest;
+import com.example.demo.enums.ProductType;
 import com.example.demo.service.ProductService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
@@ -45,5 +46,10 @@ public class ProductController {
         Product product = productService.getProductById(id);
         if (product == null) return ResponseEntity.notFound().build();
         return  ResponseEntity.ok(product);
+    }
+
+    @GetMapping("type/{type}")
+    public ResponseEntity<List<Product>> getProductByType(@PathVariable ProductType type) {
+        return ResponseEntity.ok(productService.getProductByType(type));
     }
 }
