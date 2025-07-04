@@ -16,6 +16,7 @@ public interface ProductService {
     List<Product> getAllProducts();
     Product getProductById(Long id);
     ProductResponse updateProduct(Long id, ProductRequest productRequest);
+    Product deleteProduct(Long id);
 
     List<Product> getProductByType(ProductType type);
     Page<ProductResponse> searchProduct(ProductSearchRequest request, Pageable pageable);

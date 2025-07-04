@@ -9,6 +9,7 @@ import com.example.demo.mapper.ProductMapper;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.service.ProductService;
 import jakarta.persistence.EntityNotFoundException;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
@@ -24,6 +25,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private ProductMapper productMapper;
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Override
     public Product createProduct(ProductRequest productRequest) {
@@ -55,6 +58,14 @@ public class ProductServiceImpl implements ProductService {
         productMapper.updateProduct(product, productRequest);
         productRepository.save(product);
         return productMapper.toProductResponse(product);
+    }
+
+    @Override
+    public Product deleteProduct(Long productId) {
+        Product product = productRepository.findProductByProductId(productId);
+        product.setIsDeleted(true);
+        Product savedProduct = productRepository.save(product);
+        return modelMapper.map(savedProduct, Product.class);
     }
 
     @Override
