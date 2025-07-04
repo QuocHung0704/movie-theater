@@ -2,16 +2,30 @@ package com.example.demo.service.impl;
 
 import com.example.demo.entity.Account;
 import com.example.demo.entity.Member;
+import com.example.demo.entity.request.MemberFilterRequest;
 import com.example.demo.entity.request.MemberRequest;
 import com.example.demo.entity.response.MemberResponse;
 import com.example.demo.enums.UserRoleEnums;
 import com.example.demo.mapper.MemberMapper;
+import com.example.demo.mapper.impl.MemberMapperImpl;
 import com.example.demo.repository.AccountRepository;
 import com.example.demo.repository.MemberRepository;
 import com.example.demo.service.MemberManagementService;
+import com.example.demo.utils.ValidationUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.example.demo.utils.ValidationUtils.isFilterSpecified;
+import static com.example.demo.utils.ValidationUtils.matchesSearch;
 
 @Service
 public class MemberManagementImpl implements MemberManagementService {
@@ -58,6 +72,48 @@ public class MemberManagementImpl implements MemberManagementService {
         return memberMapper.toMemberResponse(savedAccount);
     }
 
+    @Override
+    public Page<MemberResponse> getMembersPage(MemberFilterRequest memberFilterRequest) {
+        Pageable pageable = memberFilterRequest.getPageable();
+        String searchTerm = memberFilterRequest.getSearch();
+        String membershipFilter = memberFilterRequest.getMembershipFilter();
+        String status = memberFilterRequest.getStatusFilter();
+
+        List<Account> memberAccounts = accountRepository.findByAccountRole(UserRoleEnums.MEMBER);
+
+        if (ValidationUtils.isNotBlank(searchTerm)) {
+            String lowerSearch = searchTerm.toLowerCase();
+            memberAccounts = memberAccounts.stream()
+                    .filter(account -> matchesSearch(account, lowerSearch))
+                    .collect(Collectors.toList());
+        }
+
+        List<MemberResponse> memberResponses = memberAccounts.stream()
+                .map(memberMapper::toMemberResponse)
+                .collect(Collectors.toList());
+
+        if (isFilterSpecified(membershipFilter)) {
+            memberResponses = memberResponses.stream()
+                    .filter(member -> applyMembershipFilter(member, membershipFilter))
+                    .collect(Collectors.toList());
+        }
+
+        if (isFilterSpecified(status)) {
+            memberResponses = memberResponses.stream()
+                    .filter(member -> applyStatusFilter(member, status))
+                    .collect(Collectors.toList());
+        }
+
+        int start = (int) pageable.getOffset();
+        int end = Math.min(start + pageable.getPageSize(), memberResponses.size());
+        List<MemberResponse> pageContent = start < end
+                ? memberResponses.subList(start, end)
+                : Collections.emptyList();
+
+        return new PageImpl<>(pageContent, pageable, memberResponses.size());
+
+    }
+
     private void validateMember(MemberRequest memberRequest) {
         if (accountRepository.existsByUsername(memberRequest.getUsername())) {
             throw new RuntimeException("Tên đăng nhập đã tồn tại");
@@ -71,6 +127,29 @@ public class MemberManagementImpl implements MemberManagementService {
         if (memberRequest.getIdentityCard() != null &&
                 accountRepository.existsByIdentityCard(memberRequest.getIdentityCard())) {
             throw new RuntimeException("Số CMND/CCCD đã được sử dụng");
+        }
+    }
+
+    private boolean applyMembershipFilter(MemberResponse member, String membershipFilter) {
+        if ("all".equals(membershipFilter)) {
+            return true;
+        }
+
+        if (member.getMembershipLevel() == null) {
+            return "bronze".equals(membershipFilter.toLowerCase());
+        }
+
+        return member.getMembershipLevel().toLowerCase().equals(membershipFilter.toLowerCase());
+    }
+
+    private boolean applyStatusFilter(MemberResponse member, String statusFilter) {
+        switch (statusFilter.toLowerCase()) {
+            case "active":
+                return member.getStatus() != null && member.getStatus();
+            case "inactive":
+                return member.getStatus() == null || !member.getStatus();
+            default:
+                return true;
         }
     }
 }

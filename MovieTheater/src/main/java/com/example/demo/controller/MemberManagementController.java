@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.entity.request.MemberFilterRequest;
 import com.example.demo.entity.request.MemberRequest;
 import com.example.demo.entity.response.MemberResponse;
 import com.example.demo.service.MemberManagementService;
@@ -7,12 +8,12 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.checkerframework.checker.units.qual.C;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.awt.*;
 
 @RestController
 @RequestMapping("api/members")
@@ -26,5 +27,11 @@ public class MemberManagementController {
     public ResponseEntity<MemberResponse> createMember(@Valid MemberRequest memberRequest) {
         MemberResponse createMember = memberManagementService.createMember(memberRequest);
         return ResponseEntity.ok(createMember);
+    }
+
+    @GetMapping("")
+    public ResponseEntity<?> getMembers(@ModelAttribute MemberFilterRequest memberFilterRequest) {
+        Page<MemberResponse> result = memberManagementService.getMembersPage(memberFilterRequest);
+        return ResponseEntity.ok(result);
     }
 }
