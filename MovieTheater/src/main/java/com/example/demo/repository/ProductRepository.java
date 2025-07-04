@@ -13,13 +13,13 @@ import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    @Query("SELECT p FROM Product p WHERE p.isActive = true")
+    @Query("SELECT p FROM Product p WHERE p.isDeleted = false")
     List<Product> findAllActive();
 
     @Query("SELECT p FROM Product p WHERE p.productId = :id AND p.isActive = true")
     Optional<Product> findByIdIsActive(Long id);
 
-    @Query("SELECT p FROM Product p WHERE p.productType = :type AND p.isActive = true")
+    @Query("SELECT p FROM Product p WHERE p.productType = :type AND p.isDeleted = false")
     List<Product> getProductByType(@Param("type")ProductType type);
 
     @Query("SELECT p FROM Product p WHERE " +
@@ -31,4 +31,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                                  @Param("type") ProductType type,
                                  @Param("isActive") Boolean isActive,
                                  Pageable pageable);
+
+    Product findProductByProductId(long productId);
 }

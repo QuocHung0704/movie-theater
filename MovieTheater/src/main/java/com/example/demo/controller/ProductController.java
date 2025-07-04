@@ -5,6 +5,7 @@ import com.example.demo.entity.request.ProductRequest;
 import com.example.demo.entity.request.ProductSearchRequest;
 import com.example.demo.entity.response.ProductResponse;
 import com.example.demo.enums.ProductType;
+import com.example.demo.repository.ProductRepository;
 import com.example.demo.service.ProductService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.persistence.EntityNotFoundException;
@@ -28,6 +29,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductController {
     private final ProductService productService;
+    private final ProductRepository productRepository;
 
     @PostMapping("")
     public ResponseEntity<Product> createProduct(@RequestBody ProductRequest productRequest) {
@@ -84,4 +86,9 @@ public class ProductController {
         }
     }
 
+    @DeleteMapping("{id}")
+    public ResponseEntity<?> deleteProduct(@PathVariable Long id) {
+            Product deleteProduct = productService.deleteProduct(id);
+            return ResponseEntity.ok(deleteProduct);
+    }
 }
