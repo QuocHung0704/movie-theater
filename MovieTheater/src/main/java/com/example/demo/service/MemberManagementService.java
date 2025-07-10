@@ -8,6 +8,6 @@ import org.springframework.data.domain.Pageable;
 
 public interface MemberManagementService {
     MemberResponse createMember(MemberRequest memberRequest);
-
     Page<MemberResponse> getMembersPage(MemberFilterRequest memberFilterRequest);
+    MemberResponse getMemberById(Long memberId);
 }

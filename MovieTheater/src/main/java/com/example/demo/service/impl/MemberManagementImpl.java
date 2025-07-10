@@ -114,6 +114,13 @@ public class MemberManagementImpl implements MemberManagementService {
 
     }
 
+    @Override
+    public MemberResponse getMemberById(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy thành viên"));
+        return memberMapper.toMemberResponse(member.getAccount());
+    }
+
     private void validateMember(MemberRequest memberRequest) {
         if (accountRepository.existsByUsername(memberRequest.getUsername())) {
             throw new RuntimeException("Tên đăng nhập đã tồn tại");

@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Data
@@ -23,10 +24,10 @@ public class MemberResponse {
     private String address;
 
     @JsonFormat(pattern = "dd/MM/yyyy")
-    private Date dateOfBirth;
+    private LocalDate dateOfBirth;
 
     @JsonFormat(pattern = "dd/MM/yyyy")
-    private Date joinDate;
+    private LocalDate joinDate;
 
     private Boolean status;
     private Boolean emailVerified;
