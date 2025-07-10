@@ -6,6 +6,7 @@ import com.example.demo.entity.request.MemberFilterRequest;
 import com.example.demo.entity.request.MemberRequest;
 import com.example.demo.entity.response.MemberResponse;
 import com.example.demo.enums.UserRoleEnums;
+import com.example.demo.mapper.AccountMapper;
 import com.example.demo.mapper.MemberMapper;
 import com.example.demo.mapper.impl.MemberMapperImpl;
 import com.example.demo.repository.AccountRepository;
@@ -33,12 +34,12 @@ public class MemberManagementImpl implements MemberManagementService {
     private final PasswordEncoder passwordEncoder;
     @Autowired
     private AccountRepository accountRepository;
-
     @Autowired
     private MemberRepository memberRepository;
-
     @Autowired
     private MemberMapper memberMapper;
+    @Autowired
+    private AccountMapper accountMapper;
 
     public MemberManagementImpl(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
@@ -119,6 +120,20 @@ public class MemberManagementImpl implements MemberManagementService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy thành viên"));
         return memberMapper.toMemberResponse(member.getAccount());
+    }
+
+    @Override
+    public MemberResponse updateMember(Long memberId, MemberRequest memberRequest) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy thành viên"));
+        Account account = member.getAccount();
+        validateMember(memberRequest);
+
+        accountMapper.updateAccount(account, memberRequest);
+        memberMapper.memberUpdater(member, memberRequest);
+        accountRepository.save(account);
+        memberRepository.save(member);
+        return memberMapper.toMemberResponse(account);
     }
 
     private void validateMember(MemberRequest memberRequest) {
