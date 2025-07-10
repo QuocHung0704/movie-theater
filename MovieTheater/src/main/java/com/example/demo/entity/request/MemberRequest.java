@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Data
@@ -36,7 +37,7 @@ public class MemberRequest {
     private String password;
 
     @JsonFormat(pattern = "dd/MM/yyyy")
-    private Date dateOfBirth;
+    private LocalDate dateOfBirth;
 
     @Pattern(regexp = "^\\d{12}$", message = "Số CMND/CCCD phải đúng 12 chữ số")
     private String identityCard;

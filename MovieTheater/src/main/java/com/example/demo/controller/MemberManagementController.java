@@ -29,9 +29,16 @@ public class MemberManagementController {
         return ResponseEntity.ok(createMember);
     }
 
+    //should use request param
     @GetMapping("")
     public ResponseEntity<?> getMembers(@ModelAttribute MemberFilterRequest memberFilterRequest) {
         Page<MemberResponse> result = memberManagementService.getMembersPage(memberFilterRequest);
         return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("{memberId}")
+    public ResponseEntity<MemberResponse> getMenberById(@PathVariable("memberId") Long memberId) {
+        MemberResponse member = memberManagementService.getMemberById(memberId);
+        return ResponseEntity.ok(member);
     }
 }

@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
 import java.util.Date;
 
 @Data
@@ -15,7 +17,7 @@ import java.util.Date;
 public class RegisterRequest {
     @NotNull(message = "Ngày sinh không được để trống")
     @JsonFormat(pattern = "dd/MM/yyyy")
-    private Date dateOfBirth;
+    private LocalDate dateOfBirth;
 
     @NotBlank(message = "Email không được để trống")
     @Email(message = "Email không hợp lệ")

@@ -8,10 +8,7 @@ import com.example.demo.enums.UserRoleEnums;
 import com.example.demo.repository.EmployeeRepository;
 import com.example.demo.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,6 +19,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -140,24 +140,32 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void importDataFromExcel(MultipartFile file) throws IOException {
         try (Workbook workbook = new XSSFWorkbook(file.getInputStream())) {
             Sheet sheet = workbook.getSheetAt(0);
+            DataFormatter formatter = new DataFormatter();
 
             for (Row row : sheet) {
-                if (row.getRowNum() == 0) {
+                if (row.getRowNum() == 0) continue; // Bỏ qua header
+
+                String username = formatter.formatCellValue(row.getCell(0)).trim();
+                String fullName = formatter.formatCellValue(row.getCell(1)).trim();
+                String email = formatter.formatCellValue(row.getCell(2)).trim();
+                String phoneNumber = formatter.formatCellValue(row.getCell(3)).trim();
+                String identityCard = formatter.formatCellValue(row.getCell(4)).trim();
+                String dobString = formatter.formatCellValue(row.getCell(5)).trim();
+                String password = formatter.formatCellValue(row.getCell(6)).trim();
+                String confirmPassword = formatter.formatCellValue(row.getCell(7)).trim();
+
+                // Nếu có ô nào bị trống thì bỏ qua dòng
+                if (username.isEmpty() || fullName.isEmpty() || email.isEmpty() || phoneNumber.isEmpty() ||
+                        identityCard.isEmpty() || dobString.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
                     continue;
                 }
 
-                String username = row.getCell(0) != null ? row.getCell(0).getStringCellValue() : null;
-                String fullName = row.getCell(1) != null ? row.getCell(1).getStringCellValue() : null;
-                String email = row.getCell(2) != null ? row.getCell(2).getStringCellValue() : null;
-                String phoneNumber = row.getCell(3) != null ? row.getCell(3).getStringCellValue() : null;
-                String identityCard = row.getCell(4) != null ? row.getCell(4).getStringCellValue() : null;
-                Date dateOfBirth = row.getCell(5) != null ? row.getCell(5).getDateCellValue() : null;
-                String password = row.getCell(6) != null ? row.getCell(6).getStringCellValue() : null;
-                String confirmPassword = row.getCell(7) != null ? row.getCell(7).getStringCellValue() : null;
-
-                if (username == null || fullName == null || email == null || phoneNumber == null ||
-                        identityCard == null || dateOfBirth == null || password == null || confirmPassword == null) {
-                    continue;
+                // Chuyển chuỗi ngày sinh sang LocalDate
+                LocalDate dateOfBirth;
+                try {
+                    dateOfBirth = LocalDate.parse(dobString, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                } catch (DateTimeParseException e) {
+                    continue; // Bỏ qua nếu sai định dạng ngày
                 }
 
                 EmployeeRequest employeeRequest = EmployeeRequest.builder()
@@ -177,4 +185,5 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new IOException("Failed to import data from Excel: " + e.getMessage(), e);
         }
     }
+
 }
