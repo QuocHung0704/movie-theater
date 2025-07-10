@@ -10,4 +10,5 @@ public interface MemberManagementService {
     MemberResponse createMember(MemberRequest memberRequest);
     Page<MemberResponse> getMembersPage(MemberFilterRequest memberFilterRequest);
     MemberResponse getMemberById(Long memberId);
+    MemberResponse updateMember(Long memberId, MemberRequest memberRequest);
 }

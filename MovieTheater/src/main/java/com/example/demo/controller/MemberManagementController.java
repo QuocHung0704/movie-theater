@@ -41,4 +41,10 @@ public class MemberManagementController {
         MemberResponse member = memberManagementService.getMemberById(memberId);
         return ResponseEntity.ok(member);
     }
+
+    @PutMapping("{memberId}")
+    public ResponseEntity<MemberResponse> updateMember(@PathVariable("memberId") Long memberId, @Valid MemberRequest memberRequest) {
+        MemberResponse updatedMember = memberManagementService.updateMember(memberId, memberRequest);
+        return ResponseEntity.ok(updatedMember);
+    }
 }

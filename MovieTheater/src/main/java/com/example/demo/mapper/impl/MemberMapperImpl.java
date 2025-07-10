@@ -2,6 +2,7 @@ package com.example.demo.mapper.impl;
 
 import com.example.demo.entity.Account;
 import com.example.demo.entity.Member;
+import com.example.demo.entity.request.MemberRequest;
 import com.example.demo.entity.response.MemberResponse;
 import com.example.demo.mapper.MemberMapper;
 import com.example.demo.repository.MemberRepository;
@@ -43,5 +44,18 @@ public class MemberMapperImpl implements MemberMapper {
                 .lastActivity("")
                 .points(member != null ? member.getAvailablePoints() : 0L)
                 .build();
+    }
+
+    @Override
+    public void memberUpdater(Member member, MemberRequest memberRequest) {
+        if (memberRequest.getAddScore() != null) {
+            member.setAddScore(memberRequest.getAddScore());
+        }
+        if (memberRequest.getUseScore() != null) {
+            member.setUseScore(memberRequest.getUseScore());
+        }
+        if (memberRequest.getTotalSpent() != null) {
+            member.setTotalSpent(memberRequest.getTotalSpent());
+        }
     }
 }

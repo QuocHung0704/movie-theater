@@ -1,5 +1,6 @@
 package com.example.demo.entity.request;
 
+import com.example.demo.enums.UserRoleEnums;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -45,6 +46,18 @@ public class MemberRequest {
     @Size(max = 255, message = "Địa chỉ không được vượt quá 255 ký tự")
     private String address;
 
+    private UserRoleEnums accountRole;
+
+    @Min(value = 0, message = "Điểm tích lũy không được âm")
+    private Long addScore;
+
+    @Min(value = 0, message = "Điểm đã sử dụng không được âm")
+    private Long useScore;
+
+    // Total spent management (optional)
+    @Min(value = 0, message = "Tổng chi tiêu không được âm")
+    private Long totalSpent;
+
     // Initial points (optional)
     @Min(value = 0, message = "Điểm ban đầu không được âm")
     private Long initialPoints = 0L;
@@ -52,4 +65,6 @@ public class MemberRequest {
     // Initial spending amount (optional)
     @Min(value = 0, message = "Số tiền chi tiêu ban đầu không được âm")
     private Long initialSpent = 0L;
+
+    private Boolean status;
 }
