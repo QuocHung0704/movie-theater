@@ -53,4 +53,10 @@ public class MemberManagementController {
         String result = memberManagementService.deactiveMember(memberId);
         return ResponseEntity.ok(result);
     }
+
+    @PutMapping("{memberId}/activate")
+    public ResponseEntity<String> activateMember(@PathVariable("memberId") Long memberId) {
+        String result = memberManagementService.activeMember(memberId);
+        return ResponseEntity.ok(result);
+    }
 }
