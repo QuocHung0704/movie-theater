@@ -12,4 +12,5 @@ public interface MemberManagementService {
     MemberResponse getMemberById(Long memberId);
     MemberResponse updateMember(Long memberId, MemberRequest memberRequest);
     String deactiveMember(Long memberId);
+    String activeMember(Long memberId);
 }
