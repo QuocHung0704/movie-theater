@@ -11,4 +11,5 @@ public interface MemberManagementService {
     Page<MemberResponse> getMembersPage(MemberFilterRequest memberFilterRequest);
     MemberResponse getMemberById(Long memberId);
     MemberResponse updateMember(Long memberId, MemberRequest memberRequest);
+    String deactiveMember(Long memberId);
 }

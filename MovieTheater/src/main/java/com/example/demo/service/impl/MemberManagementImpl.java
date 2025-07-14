@@ -13,6 +13,7 @@ import com.example.demo.repository.AccountRepository;
 import com.example.demo.repository.MemberRepository;
 import com.example.demo.service.MemberManagementService;
 import com.example.demo.utils.ValidationUtils;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -134,6 +135,21 @@ public class MemberManagementImpl implements MemberManagementService {
         accountRepository.save(account);
         memberRepository.save(member);
         return memberMapper.toMemberResponse(account);
+    }
+
+    @Override
+    @Transactional
+    public String deactiveMember(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy thành viên"));
+
+        Account account = member.getAccount();
+        if (!account.isStatus()) {
+            throw new RuntimeException("Tài khoản đã bị vô hiệu hóa");
+        }
+        account.setStatus(false);
+        accountRepository.save(account);
+        return "Tài khoản thành viên đã bị vô hiệu hóa";
     }
 
     private void validateMember(MemberRequest memberRequest) {

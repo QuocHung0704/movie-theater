@@ -37,7 +37,7 @@ public class MemberManagementController {
     }
 
     @GetMapping("{memberId}")
-    public ResponseEntity<MemberResponse> getMenberById(@PathVariable("memberId") Long memberId) {
+    public ResponseEntity<MemberResponse> getMemberById(@PathVariable("memberId") Long memberId) {
         MemberResponse member = memberManagementService.getMemberById(memberId);
         return ResponseEntity.ok(member);
     }
@@ -46,5 +46,11 @@ public class MemberManagementController {
     public ResponseEntity<MemberResponse> updateMember(@PathVariable("memberId") Long memberId, @Valid MemberRequest memberRequest) {
         MemberResponse updatedMember = memberManagementService.updateMember(memberId, memberRequest);
         return ResponseEntity.ok(updatedMember);
+    }
+
+    @PutMapping("{memberId}/deactivate")
+    public ResponseEntity<String> deactivateMember(@PathVariable("memberId") Long memberId) {
+        String result = memberManagementService.deactiveMember(memberId);
+        return ResponseEntity.ok(result);
     }
 }
