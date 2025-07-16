@@ -174,6 +174,15 @@ public class MemberManagementImpl implements MemberManagementService {
 
     }
 
+    @Override
+    public String addPointsToMember(Long memberId, Long points) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy thành viên"));
+        member.addPoints(points);
+        memberRepository.save(member);
+        return String.format("Đã thêm %d điểm cho thành viên", points);
+    }
+
     private void validateMember(MemberRequest memberRequest) {
         if (accountRepository.existsByUsername(memberRequest.getUsername())) {
             throw new RuntimeException("Tên đăng nhập đã tồn tại");

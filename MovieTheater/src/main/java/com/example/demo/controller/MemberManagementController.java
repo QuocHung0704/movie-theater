@@ -66,5 +66,11 @@ public class MemberManagementController {
         return ResponseEntity.ok(result);
     }
 
-
+    @PostMapping("/{memberId}/points/add")
+    public ResponseEntity<String> usePointsFromMember(
+            @PathVariable Long memberId,
+            @RequestParam Long points) {
+        String result = memberManagementService.addPointsToMember(memberId, points);
+        return ResponseEntity.ok(result);
+    }
 }
