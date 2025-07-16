@@ -16,4 +16,5 @@ public interface MemberManagementService {
     String deleteMember(Long memberId);
     String addPointsToMember(Long memberId, Long points);
     String usePointsToMember(Long memberId, Long points);
+    String addSpendingFromMember(Long memberId, Long amount);
 }

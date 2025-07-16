@@ -197,6 +197,15 @@ public class MemberManagementImpl implements MemberManagementService {
         }
     }
 
+    @Override
+    public String addSpendingFromMember(Long memberId, Long amount) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy thành viên"));
+        member.addSpending(amount);
+        memberRepository.save(member);
+        return String.format("Đã thêm %d VND vào tổng chi tiêu của thành viên", amount);
+    }
+
     private void validateMember(MemberRequest memberRequest) {
         if (accountRepository.existsByUsername(memberRequest.getUsername())) {
             throw new RuntimeException("Tên đăng nhập đã tồn tại");
