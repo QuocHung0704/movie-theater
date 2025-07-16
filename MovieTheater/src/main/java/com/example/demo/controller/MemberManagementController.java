@@ -82,4 +82,13 @@ public class MemberManagementController {
         String result = memberManagementService.usePointsToMember(memberId, points);
         return ResponseEntity.ok(result);
     }
+
+    @PostMapping("{memberId}/spending/add")
+    public ResponseEntity<String> useSpendingFromMember(
+            @PathVariable Long memberId,
+            @RequestParam Long amount
+    ) {
+        String result = memberManagementService.addSpendingFromMember(memberId, amount);
+        return ResponseEntity.ok(result);
+    }
 }

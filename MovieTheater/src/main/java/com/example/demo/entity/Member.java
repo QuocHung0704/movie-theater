@@ -82,6 +82,17 @@ public class Member {
         return false;
     }
 
+    public void addSpending(Long amount) {
+        if (amount != null && amount > 0) {
+            this.totalSpent = (this.totalSpent != null ? this.totalSpent : 0L) + amount;
+            // Add 1 point for every 10,000 VND spent
+            Long pointsToAdd = amount / 10000;
+            if (pointsToAdd > 0) {
+                addPoints(pointsToAdd); // This will add to both tier and exchange scores
+            }
+        }
+    }
+
     @Transient
     public MembershipLevel getTierBasedMembershipLevel() {
         Long tierPoints = getTierPoints();
