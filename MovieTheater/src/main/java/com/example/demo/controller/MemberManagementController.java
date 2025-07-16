@@ -73,4 +73,13 @@ public class MemberManagementController {
         String result = memberManagementService.addPointsToMember(memberId, points);
         return ResponseEntity.ok(result);
     }
+
+    @PostMapping({"{memberId}/points/use"})
+    public ResponseEntity<String> usePointsToMember(
+            @PathVariable Long memberId,
+            @RequestParam Long points
+    ) {
+        String result = memberManagementService.usePointsToMember(memberId, points);
+        return ResponseEntity.ok(result);
+    }
 }

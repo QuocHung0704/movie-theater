@@ -68,6 +68,20 @@ public class Member {
         }
     }
 
+    public boolean usePoints(Long points) {
+        if (points != null && points > 0) {
+            Long available = getAvailablePoints();
+            Long availableExchange = getAvailableExchangePoints();
+
+            if (available >= points && availableExchange >= points) {
+                this.useScore = (this.useScore != null ? this.useScore : 0L) + points;
+                this.exchangeScore = (this.exchangeScore != null ? this.exchangeScore : 0L) - points;
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Transient
     public MembershipLevel getTierBasedMembershipLevel() {
         Long tierPoints = getTierPoints();
@@ -100,5 +114,6 @@ public class Member {
     public MembershipLevel getNextMembershipLevel() {
         return getMembershipLevel().getNextLevel();
     }
+
 
 }
