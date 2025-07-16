@@ -183,6 +183,20 @@ public class MemberManagementImpl implements MemberManagementService {
         return String.format("Đã thêm %d điểm cho thành viên", points);
     }
 
+    @Override
+    @Transactional
+    public String usePointsToMember(Long memberId, Long points) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy thành viên"));
+
+        if (member.usePoints(points)) {
+            memberRepository.save(member);
+            return String.format("Đã sử dụng %d điểm từ tài khoản của thành viên", points);
+        } else {
+            throw new RuntimeException("Không đủ điểm để thực hiện giao dịch");
+        }
+    }
+
     private void validateMember(MemberRequest memberRequest) {
         if (accountRepository.existsByUsername(memberRequest.getUsername())) {
             throw new RuntimeException("Tên đăng nhập đã tồn tại");
