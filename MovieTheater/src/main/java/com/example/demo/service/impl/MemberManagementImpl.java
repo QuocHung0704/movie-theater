@@ -14,6 +14,11 @@ import com.example.demo.repository.MemberRepository;
 import com.example.demo.service.MemberManagementService;
 import com.example.demo.utils.ValidationUtils;
 import jakarta.transaction.Transactional;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,6 +27,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -204,6 +211,56 @@ public class MemberManagementImpl implements MemberManagementService {
         member.addSpending(amount);
         memberRepository.save(member);
         return String.format("Đã thêm %d VND vào tổng chi tiêu của thành viên", amount);
+    }
+
+    @Override
+    public byte[] exportMemberToExcel() {
+        List<Account> memberAccounts = accountRepository.findByAccountRole(UserRoleEnums.MEMBER);
+
+        try (Workbook workbook = new XSSFWorkbook()) {
+            Sheet sheet = workbook.createSheet("Danh sách thành viên");
+
+            // Create header row
+            Row headerRow = sheet.createRow(0);
+            String[] headers = {
+                    "ID", "Họ và tên", "Email", "Số điện thoại", "Hạng thành viên",
+                    "Tổng chi tiêu", "Điểm tích lũy", "Trạng thái", "Ngày tham gia"
+            };
+
+            for (int i = 0; i < headers.length; i++) {
+                Cell cell = headerRow.createCell(i);
+                cell.setCellValue(headers[i]);
+            }
+
+            // Create data rows
+            int rowNum = 1;
+            for (Account account : memberAccounts) {
+                Member member = memberRepository.findByAccount_AccountId(account.getAccountId());
+
+                Row row = sheet.createRow(rowNum++);
+                row.createCell(0).setCellValue(account.getAccountId());
+                row.createCell(1).setCellValue(account.getFullName());
+                row.createCell(2).setCellValue(account.getEmail());
+                row.createCell(3).setCellValue(account.getPhoneNumber());
+                row.createCell(4).setCellValue(member != null ? member.getMembershipLevel().getDisplayName() : "Bronze");
+                row.createCell(5).setCellValue(member != null && member.getTotalSpent() != null ? member.getTotalSpent() : 0L);
+                row.createCell(6).setCellValue(member != null ? member.getAvailablePoints() : 0L);
+                row.createCell(7).setCellValue(account.isStatus() ? "Hoạt động" : "Không hoạt động");
+                row.createCell(8).setCellValue(account.getDateOfBirth() != null ? account.getDateOfBirth().toString() : "");
+            }
+
+            // Auto-size columns
+            for (int i = 0; i < headers.length; i++) {
+                sheet.autoSizeColumn(i);
+            }
+
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            workbook.write(outputStream);
+            return outputStream.toByteArray();
+
+        } catch (IOException e) {
+            throw new RuntimeException("Lỗi khi tạo file Excel", e);
+        }
     }
 
     private void validateMember(MemberRequest memberRequest) {

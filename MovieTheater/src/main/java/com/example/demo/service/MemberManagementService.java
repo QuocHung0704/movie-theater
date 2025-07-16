@@ -17,4 +17,5 @@ public interface MemberManagementService {
     String addPointsToMember(Long memberId, Long points);
     String usePointsToMember(Long memberId, Long points);
     String addSpendingFromMember(Long memberId, Long amount);
+    byte[] exportMemberToExcel();
 }
