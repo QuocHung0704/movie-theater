@@ -163,6 +163,17 @@ public class MemberManagementImpl implements MemberManagementService {
         return "Tài khoản thành viên đã được kích hoạt";
     }
 
+    @Override
+    public String deleteMember(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy thành viên"));
+        Account account = member.getAccount();
+        account.setStatus(false);
+        accountRepository.save(account);
+        return "Thành viên đã được xóa";
+
+    }
+
     private void validateMember(MemberRequest memberRequest) {
         if (accountRepository.existsByUsername(memberRequest.getUsername())) {
             throw new RuntimeException("Tên đăng nhập đã tồn tại");

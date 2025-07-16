@@ -59,4 +59,12 @@ public class MemberManagementController {
         String result = memberManagementService.activeMember(memberId);
         return ResponseEntity.ok(result);
     }
+
+    @DeleteMapping("{memberId}")
+    public ResponseEntity<String> deleteMember(@PathVariable Long memberId) {
+        String result = memberManagementService.deleteMember(memberId);
+        return ResponseEntity.ok(result);
+    }
+
+
 }

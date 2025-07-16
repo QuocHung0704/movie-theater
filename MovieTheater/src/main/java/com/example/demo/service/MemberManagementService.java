@@ -13,4 +13,6 @@ public interface MemberManagementService {
     MemberResponse updateMember(Long memberId, MemberRequest memberRequest);
     String deactiveMember(Long memberId);
     String activeMember(Long memberId);
+    String deleteMember(Long memberId);
+
 }
