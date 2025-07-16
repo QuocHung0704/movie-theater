@@ -9,10 +9,13 @@ import lombok.RequiredArgsConstructor;
 import org.checkerframework.checker.units.qual.C;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.print.attribute.standard.Media;
 import java.awt.*;
 
 @RestController
@@ -90,5 +93,18 @@ public class MemberManagementController {
     ) {
         String result = memberManagementService.addSpendingFromMember(memberId, amount);
         return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("export")
+    public ResponseEntity<byte[]> expotMembersToExcel() {
+        byte[] excelData = memberManagementService.exportMemberToExcel();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", "members.xlsx");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(excelData);
     }
 }
