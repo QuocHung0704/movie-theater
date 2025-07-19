@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -47,5 +48,14 @@ public class CinemaRoomImpl implements CinemaRoomService {
             throw new RuntimeException("Cinema rooms not exists");
         }
         return cinemaRooms;
+    }
+
+    @Override
+    public Optional<CinemaRoom> getCinemaRoomById(Long id) {
+        Optional<CinemaRoom> cinemaRoom = cinemaRoomRepository.getCinemaRoomByCinemaRoomIdAndIsDeletedFalse(id);
+        if (!cinemaRoom.isPresent()) {
+            throw new RuntimeException("Cinema room not exists: " + id);
+        }
+        return cinemaRoom;
     }
 }
