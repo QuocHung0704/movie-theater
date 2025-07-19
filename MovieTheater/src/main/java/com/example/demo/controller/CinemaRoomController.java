@@ -36,4 +36,9 @@ public class CinemaRoomController {
     public ResponseEntity<List<CinemaRoom>> getAllCinemaRooms() {
         return ResponseEntity.ok(cinemaRoomService.getAllCinemaRooms());
     }
+
+    @GetMapping("{id}")
+    public ResponseEntity getCinemaRoomById(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(cinemaRoomService.getCinemaRoomById(id));
+    }
 }
