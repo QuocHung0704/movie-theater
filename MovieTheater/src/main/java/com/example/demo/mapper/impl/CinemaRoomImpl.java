@@ -2,11 +2,13 @@ package com.example.demo.mapper.impl;
 
 import com.example.demo.entity.CinemaRoom;
 import com.example.demo.entity.request.CinemaRoomRequest;
-import com.example.demo.mapper.CinemaRoomService;
+import com.example.demo.service.CinemaRoomService;
 import com.example.demo.repository.CinemaRoomRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -38,5 +40,12 @@ public class CinemaRoomImpl implements CinemaRoomService {
         }
     }
 
-
+    @Override
+    public List<CinemaRoom> getAllCinemaRooms() {
+        List<CinemaRoom> cinemaRooms = cinemaRoomRepository.findByIsDeletedFalse();
+        if (cinemaRooms.isEmpty()) {
+            throw new RuntimeException("Cinema rooms not exists");
+        }
+        return cinemaRooms;
+    }
 }

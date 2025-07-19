@@ -1,4 +1,4 @@
-package com.example.demo.repository;
+package com.example.demo.service;
 
 public interface EmailService {
     void sendHtmlMail(String to, String subject, String fullName, String verifyUrl);

@@ -2,7 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.CinemaRoom;
 import com.example.demo.entity.request.CinemaRoomRequest;
-import com.example.demo.mapper.CinemaRoomService;
+import com.example.demo.service.CinemaRoomService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,5 +30,10 @@ public class CinemaRoomController {
             log.error("Error to create cinema room: {}", e.getMessage(), e);
             throw e;
         }
+    }
+
+    @GetMapping("")
+    public ResponseEntity<List<CinemaRoom>> getAllCinemaRooms() {
+        return ResponseEntity.ok(cinemaRoomService.getAllCinemaRooms());
     }
 }
