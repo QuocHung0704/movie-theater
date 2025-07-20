@@ -11,4 +11,5 @@ public interface CinemaRoomRepository extends JpaRepository<CinemaRoom, Long> {
     boolean existsByCinemaRoomNameAndIsDeletedFalse(String cinemaRoomName);
     List<CinemaRoom> findByIsDeletedFalse();
     Optional<CinemaRoom> getCinemaRoomByCinemaRoomIdAndIsDeletedFalse(Long cinemaRoomId);
+    boolean existsByCinemaRoomNameAndIsDeletedFalseAndCinemaRoomIdNot(String cinemaRoomName, Long cinemaRoomId);
 }

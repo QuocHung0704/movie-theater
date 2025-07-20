@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.CinemaRoom;
 import com.example.demo.entity.request.CinemaRoomRequest;
+import com.example.demo.entity.response.CinemaRoomResponse;
 import com.example.demo.service.CinemaRoomService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -40,5 +41,11 @@ public class CinemaRoomController {
     @GetMapping("{id}")
     public ResponseEntity getCinemaRoomById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(cinemaRoomService.getCinemaRoomById(id));
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity<CinemaRoomResponse> updateCinemaRoom(@PathVariable("id") Long id, @Valid @RequestBody CinemaRoomRequest cinemaRoomRequest) {
+        CinemaRoomResponse cinemaRoomResponse = cinemaRoomService.updateCinemaRoomById(id, cinemaRoomRequest);
+        return ResponseEntity.ok(cinemaRoomResponse);
     }
 }

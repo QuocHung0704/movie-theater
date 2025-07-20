@@ -20,6 +20,10 @@ public class CinemaRoomRequest {
     @Min(value = 10000, message = "Base ticket price must be at least 10,000 VND")
     private Long baseTicketPrice;
 
+    private boolean isDeleted;
+    private Integer totalRows = 0;
+    private Integer totalColumns = 0;
+
     private String walkingLanePosition;
     private Set<FilmVersion> supportedFilmVersions;
 }
