@@ -13,4 +13,5 @@ public interface CinemaRoomService {
     List<CinemaRoom> getAllCinemaRooms();
     Optional<CinemaRoom> getCinemaRoomById(Long id);
     CinemaRoomResponse updateCinemaRoomById(Long id, CinemaRoomRequest cinemaRoomRequest);
+    CinemaRoom deleteCinemaRoomById(Long id);
 }
