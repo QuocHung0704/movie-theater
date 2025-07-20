@@ -1,7 +1,9 @@
-package com.example.demo.mapper.impl;
+package com.example.demo.service.impl;
 
 import com.example.demo.entity.CinemaRoom;
 import com.example.demo.entity.request.CinemaRoomRequest;
+import com.example.demo.entity.response.CinemaRoomResponse;
+import com.example.demo.mapper.CinemaRoomMapper;
 import com.example.demo.service.CinemaRoomService;
 import com.example.demo.repository.CinemaRoomRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,7 @@ import java.util.Optional;
 @Slf4j
 public class CinemaRoomImpl implements CinemaRoomService {
     private final CinemaRoomRepository cinemaRoomRepository;
+    private final CinemaRoomMapper cinemaRoomMapper;
 
     @Override
     public CinemaRoom createCinemaRoom(CinemaRoomRequest cinemaRoomRequest) {
@@ -57,5 +60,23 @@ public class CinemaRoomImpl implements CinemaRoomService {
             throw new RuntimeException("Cinema room not exists: " + id);
         }
         return cinemaRoom;
+    }
+
+    @Override
+    public CinemaRoomResponse updateCinemaRoomById(Long id, CinemaRoomRequest cinemaRoomRequest) {
+        CinemaRoom existingRoom = cinemaRoomRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Cinema room not found with id: " + id));
+
+        if (!existingRoom.getCinemaRoomName().equalsIgnoreCase(cinemaRoomRequest.getCinemaRoomName())) {
+            boolean nameExists = cinemaRoomRepository.existsByCinemaRoomNameAndIsDeletedFalse(cinemaRoomRequest.getCinemaRoomName());
+            if (nameExists) {
+                throw new RuntimeException("Cinema room name already exists: " + cinemaRoomRequest.getCinemaRoomName());
+            }
+        }
+
+        cinemaRoomMapper.updatedCinemaRoom(existingRoom, cinemaRoomRequest);
+        CinemaRoom updatedRoom = cinemaRoomRepository.save(existingRoom);
+
+        return cinemaRoomMapper.toCinemaRoomResponse(updatedRoom);
     }
 }
