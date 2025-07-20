@@ -79,4 +79,16 @@ public class CinemaRoomImpl implements CinemaRoomService {
 
         return cinemaRoomMapper.toCinemaRoomResponse(updatedRoom);
     }
+
+    @Override
+    public CinemaRoom deleteCinemaRoomById(Long id) {
+        Optional<CinemaRoom> existingRoom = cinemaRoomRepository.getCinemaRoomByCinemaRoomIdAndIsDeletedFalse(id);
+        if (!existingRoom.isPresent()) {
+            throw new RuntimeException("Cinema room not exists: " + id);
+        } else {
+            CinemaRoom room = existingRoom.get();
+            room.setIsDeleted(true);
+            return cinemaRoomRepository.save(room);
+        }
+    }
 }

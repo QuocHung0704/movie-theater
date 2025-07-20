@@ -48,4 +48,9 @@ public class CinemaRoomController {
         CinemaRoomResponse cinemaRoomResponse = cinemaRoomService.updateCinemaRoomById(id, cinemaRoomRequest);
         return ResponseEntity.ok(cinemaRoomResponse);
     }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<CinemaRoom> deleteCinemaRoom(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(cinemaRoomService.deleteCinemaRoomById(id));
+    }
 }
