@@ -113,6 +113,37 @@ public class CinemaRoomImpl implements CinemaRoomService {
         return seatRepository.saveAll(seats);
     }
 
+    @Override
+    public List<Seat> createSeatsForRoomAutomatically(Long cinemaRoomId, int rows, int columns) {
+        Optional<CinemaRoom> cinemaRoom = cinemaRoomRepository.findById(cinemaRoomId);
+        if (!cinemaRoom.isPresent()) {
+            throw new RuntimeException("Cinema room not found");
+        }
+
+        List<Seat> seats = new ArrayList<>();
+        for (int row = 1; row <= rows; row++) {
+            for (int column = 1; column <= columns; column++) {
+                Seat seat = new Seat();
+                seat.setSeatColumn(String.valueOf((char) ('A' + column - 1)));
+                seat.setSeatRow((long) row);
+                seat.setCinemaRoom(cinemaRoom.get());
+                seats.add(seat);
+            }
+        }
+
+        return seatRepository.saveAll(seats);
+    }
+
+    @Override
+    public List<Seat> getSeatsByCinemaRoom(Long cinemaRoomId) {
+        Optional<CinemaRoom> cinemaRoom = cinemaRoomRepository.findById(cinemaRoomId);
+        if (!cinemaRoom.isPresent()) {
+            throw new RuntimeException("Cinema room not found");
+        }
+
+        return seatRepository.findActiveSeatsByCinemaRoom(cinemaRoom.get());
+    }
+
     public void deleteAllSeatsByCinemaRoom(Long cinemaRoomId) {
         CinemaRoom cinemaRoom = cinemaRoomRepository.findById(cinemaRoomId)
                 .orElseThrow(() -> new RuntimeException("Cinema room not found"));

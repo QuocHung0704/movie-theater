@@ -17,7 +17,7 @@ public class SeatMapperImpl implements SeatMapper {
     public Seat toSeatResponse(SeatRequest seatRequest, CinemaRoom cinemaRoom) {
         return Seat.builder()
                 .seatColumn(seatRequest.getSeatColumn())
-                .seatRow(seatRequest.getSeatRow())
+                .seatRow(Long.valueOf(seatRequest.getSeatRow()))
                 .seatStatus(seatRequest.getSeatStatus() != null ? seatRequest.getSeatStatus() : true)
                 .seatType(seatRequest.getSeatType() != null ? seatRequest.getSeatType() : SeatType.NORMAL)
                 .additionalPrice(seatRequest.getAdditionalPrice() != null ? seatRequest.getAdditionalPrice() : 0L)

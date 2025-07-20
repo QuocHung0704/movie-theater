@@ -70,4 +70,18 @@ public class CinemaRoomController {
             throw e;
         }
     }
+
+    @PostMapping("{cinemaRoomId}/seats/automatically")
+    public ResponseEntity<List<Seat>> createSeatsForRoomAutomatically(@PathVariable("cinemaRoomId") Long cinemaRoomId,
+                                                                      @RequestParam("rows") int rows,
+                                                                      @RequestParam("columns") int columns) {
+        List<Seat> createSeats = cinemaRoomService.createSeatsForRoomAutomatically(cinemaRoomId, rows, columns);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createSeats);
+    }
+
+    @GetMapping("{cinemaRoomId}/seats")
+    public ResponseEntity<List<Seat>> getSeatsByCinemaRoom(@PathVariable("cinemaRoomId") Long cinemaRoomId) {
+        List<Seat> seats = cinemaRoomService.getSeatsByCinemaRoom(cinemaRoomId);
+        return ResponseEntity.ok(seats);
+    }
 }
