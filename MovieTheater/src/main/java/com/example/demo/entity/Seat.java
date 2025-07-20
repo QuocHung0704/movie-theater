@@ -17,7 +17,7 @@ public class Seat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seatId;
     private String seatColumn;
-    private String seatRow;
+    private Long seatRow;
     private Boolean seatStatus = true;
     @Enumerated(EnumType.STRING)
     private SeatType seatType = SeatType.NORMAL;

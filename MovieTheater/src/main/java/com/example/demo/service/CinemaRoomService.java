@@ -18,4 +18,6 @@ public interface CinemaRoomService {
     CinemaRoom deleteCinemaRoomById(Long id);
 
     List<Seat> createSeatsForRoomManually(Long cinemaRoomId, List<SeatRequest> seatRequests);
+    List<Seat> createSeatsForRoomAutomatically(Long cinemaRoomId, int rows, int columns);
+    List<Seat> getSeatsByCinemaRoom(Long cinemaRoomId);
 }
