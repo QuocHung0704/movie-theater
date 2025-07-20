@@ -1,15 +1,20 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.CinemaRoom;
+import com.example.demo.entity.Seat;
 import com.example.demo.entity.request.CinemaRoomRequest;
+import com.example.demo.entity.request.SeatRequest;
 import com.example.demo.entity.response.CinemaRoomResponse;
 import com.example.demo.mapper.CinemaRoomMapper;
+import com.example.demo.mapper.SeatMapper;
+import com.example.demo.repository.SeatRepository;
 import com.example.demo.service.CinemaRoomService;
 import com.example.demo.repository.CinemaRoomRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,6 +24,8 @@ import java.util.Optional;
 public class CinemaRoomImpl implements CinemaRoomService {
     private final CinemaRoomRepository cinemaRoomRepository;
     private final CinemaRoomMapper cinemaRoomMapper;
+    private final SeatRepository seatRepository;
+    private final SeatMapper seatMapper;
 
     @Override
     public CinemaRoom createCinemaRoom(CinemaRoomRequest cinemaRoomRequest) {
@@ -91,4 +98,30 @@ public class CinemaRoomImpl implements CinemaRoomService {
             return cinemaRoomRepository.save(room);
         }
     }
+
+    @Override
+    public List<Seat> createSeatsForRoomManually(Long cinemaRoomId, List<SeatRequest> seatRequests) {
+        CinemaRoom cinemaRoom = cinemaRoomRepository.findById(cinemaRoomId)
+                .orElseThrow(() -> new RuntimeException("Cinema room not found"));
+
+        deleteAllSeatsByCinemaRoom(cinemaRoomId);
+        List<Seat> seats = new ArrayList<>();
+        for (SeatRequest seatRequest : seatRequests) {
+            Seat seat = seatMapper.toSeatResponse(seatRequest, cinemaRoom);
+            seats.add(seat);
+        }
+        return seatRepository.saveAll(seats);
+    }
+
+    public void deleteAllSeatsByCinemaRoom(Long cinemaRoomId) {
+        CinemaRoom cinemaRoom = cinemaRoomRepository.findById(cinemaRoomId)
+                .orElseThrow(() -> new RuntimeException("Cinema room not found"));
+        List<Seat> seats = seatRepository.findSeatsByCinemaRoom(cinemaRoom);
+
+        for (Seat seat : seats) {
+            seat.setSeatStatus(false);
+        }
+        seatRepository.saveAll(seats);
+    }
+
 }

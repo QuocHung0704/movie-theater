@@ -1,7 +1,9 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.CinemaRoom;
+import com.example.demo.entity.Seat;
 import com.example.demo.entity.request.CinemaRoomRequest;
+import com.example.demo.entity.request.SeatRequest;
 import com.example.demo.entity.response.CinemaRoomResponse;
 
 import javax.swing.text.html.Option;
@@ -14,4 +16,6 @@ public interface CinemaRoomService {
     Optional<CinemaRoom> getCinemaRoomById(Long id);
     CinemaRoomResponse updateCinemaRoomById(Long id, CinemaRoomRequest cinemaRoomRequest);
     CinemaRoom deleteCinemaRoomById(Long id);
+
+    List<Seat> createSeatsForRoomManually(Long cinemaRoomId, List<SeatRequest> seatRequests);
 }

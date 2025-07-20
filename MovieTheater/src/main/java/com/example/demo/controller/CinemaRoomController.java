@@ -1,13 +1,18 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.CinemaRoom;
+import com.example.demo.entity.Seat;
 import com.example.demo.entity.request.CinemaRoomRequest;
+import com.example.demo.entity.request.SeatRequest;
 import com.example.demo.entity.response.CinemaRoomResponse;
+import com.example.demo.repository.CinemaRoomRepository;
 import com.example.demo.service.CinemaRoomService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +26,7 @@ import java.util.List;
 @Slf4j
 public class CinemaRoomController {
     private final CinemaRoomService cinemaRoomService;
+    private final CinemaRoomRepository cinemaRoomRepository;
 
     @PostMapping("")
     public ResponseEntity<CinemaRoom> createCinemaRoom(@Valid @RequestBody CinemaRoomRequest cinemaRoomRequest) {
@@ -52,5 +58,16 @@ public class CinemaRoomController {
     @DeleteMapping("{id}")
     public ResponseEntity<CinemaRoom> deleteCinemaRoom(@PathVariable("id") Long id) {
         return ResponseEntity.ok(cinemaRoomService.deleteCinemaRoomById(id));
+    }
+
+    @PostMapping("{cinemaRoomId}/seats/manually")
+    public ResponseEntity<List<Seat>> createSeatForRoom(@PathVariable("cinemaRoomId") Long cinemaRoomId,
+                                                        @Valid @RequestBody List<SeatRequest> seatRequest) {
+        try {
+            List<Seat> createdSeats = cinemaRoomService.createSeatsForRoomManually(cinemaRoomId, seatRequest);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdSeats);
+        }catch (Exception e) {
+            throw e;
+        }
     }
 }
