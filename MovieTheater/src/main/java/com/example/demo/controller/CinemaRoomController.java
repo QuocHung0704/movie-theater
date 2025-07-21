@@ -5,6 +5,7 @@ import com.example.demo.entity.Seat;
 import com.example.demo.entity.request.CinemaRoomRequest;
 import com.example.demo.entity.request.SeatRequest;
 import com.example.demo.entity.response.CinemaRoomResponse;
+import com.example.demo.enums.FilmVersion;
 import com.example.demo.enums.SeatType;
 import com.example.demo.repository.CinemaRoomRepository;
 import com.example.demo.service.CinemaRoomService;
@@ -18,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -118,5 +120,15 @@ public class CinemaRoomController {
                 )
         );
         return ResponseEntity.ok(pricing);
+    }
+
+    @GetMapping("film-versions")
+    public ResponseEntity<List<FilmVersion>> getFilmVersions() {
+        try {
+            List<FilmVersion> versions = Arrays.asList(FilmVersion.values());
+            return ResponseEntity.ok(versions);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }
