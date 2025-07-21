@@ -126,5 +126,14 @@ public class Member {
         return getMembershipLevel().getNextLevel();
     }
 
+    public void initializeScoreFields() {
+        if (this.tierScore == null) {
+            this.tierScore = this.addScore != null ? this.addScore : 0L;
+        }
+        if (this.exchangeScore == null) {
+            this.exchangeScore = getAvailablePoints();
+        }
+    }
+
 
 }
