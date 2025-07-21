@@ -5,8 +5,10 @@ import com.example.demo.entity.Seat;
 import com.example.demo.entity.request.CinemaRoomRequest;
 import com.example.demo.entity.request.SeatRequest;
 import com.example.demo.entity.response.CinemaRoomResponse;
+import com.example.demo.enums.SeatType;
 import com.example.demo.repository.CinemaRoomRepository;
 import com.example.demo.service.CinemaRoomService;
+import com.example.demo.service.SeatPricingService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
@@ -17,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,6 +30,7 @@ import java.util.List;
 public class CinemaRoomController {
     private final CinemaRoomService cinemaRoomService;
     private final CinemaRoomRepository cinemaRoomRepository;
+    private final SeatPricingService seatPricingService;
 
     @PostMapping("")
     public ResponseEntity<CinemaRoom> createCinemaRoom(@Valid @RequestBody CinemaRoomRequest cinemaRoomRequest) {
@@ -83,5 +87,36 @@ public class CinemaRoomController {
     public ResponseEntity<List<Seat>> getSeatsByCinemaRoom(@PathVariable("cinemaRoomId") Long cinemaRoomId) {
         List<Seat> seats = cinemaRoomService.getSeatsByCinemaRoom(cinemaRoomId);
         return ResponseEntity.ok(seats);
+    }
+
+    @GetMapping("{cinemaRoomId}/pricing/{seatType}")
+    public ResponseEntity<Map<String, Object>> getSeatPrice(@PathVariable("cinemaRoomId") Long cinemaRoomId,
+                                                            @PathVariable("seatType") SeatType seatType) {
+        CinemaRoom cinemaRoom = cinemaRoomRepository.findById(cinemaRoomId)
+                .orElseThrow(() -> new RuntimeException("Cinema room not found"));
+        Long price = seatPricingService.calculateSeatPricing(cinemaRoom, seatType);
+        return ResponseEntity.ok(Map.of(
+                "cinemaRoomId", cinemaRoomId,
+                "seatType", seatType,
+                "price", price,
+                "basePrice", cinemaRoom.getBaseTicketPrice(),
+                "multiplier", seatType.getPriceMultilier()
+        ));
+    }
+
+    @GetMapping("{cinemaRoomId}/pricing")
+    public ResponseEntity<Map<String, Object>> getAllSeatPricing(@PathVariable("cinemaRoomId") Long cinemaRoomId) {
+        CinemaRoom cinemaRoom = cinemaRoomRepository.findById(cinemaRoomId)
+                .orElseThrow(() -> new RuntimeException("Cinema room not found"));
+        Map<String, Object> pricing = Map.of(
+                "cinemaRoomId", cinemaRoomId,
+                "basePrice", cinemaRoom.getBaseTicketPrice(),
+                "seatPrices", Map.of(
+                        "NORMAL", seatPricingService.calculateSeatPricing(cinemaRoom, SeatType.NORMAL),
+                        "VIP", seatPricingService.calculateSeatPricing(cinemaRoom, SeatType.VIP),
+                        "COUPLE", seatPricingService.calculateSeatPricing(cinemaRoom, SeatType.COUPLE)
+                )
+        );
+        return ResponseEntity.ok(pricing);
     }
 }
